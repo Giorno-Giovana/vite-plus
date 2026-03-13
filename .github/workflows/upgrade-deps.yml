@@ -64,6 +64,7 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          show_full_output: 'true'
           prompt: |
             Check if the build-upstream steps failed and fix them.
             ### Background
@@ -73,6 +74,7 @@ jobs:
             ### Instructions
             - We are using `pnpm` as the package manager
             - We are aiming to upgrade all dependencies to the latest versions in this workflow, so don't downgrade any dependencies.
+            - Compare tsdown CLI options with `vp pack` and sync any new or removed options. Follow the instructions in `.claude/skills/sync-tsdown-cli/SKILL.md`.
             - Check `.claude/agents/cargo-workspace-merger.md` if rolldown hash is changed.
             - Run the steps in `build-upstream` action.yml after your fixing. If no errors are found, you can safe to exit.
             - Install global CLI after the build-upstream steps are successful, by running the following commands:
@@ -91,6 +93,7 @@ jobs:
               vp test -h
               vp build -h
               vp fmt -h
+              vp pack -h
             - Your final step is to run `just build` to ensure all builds are successful.
 
             Help me fix the errors in `build-upstream` steps if exists.
