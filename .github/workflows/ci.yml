@@ -638,6 +638,17 @@ jobs:
               which npm
               node --version
 
+              # Verify vp requires ca-certificates for TLS (rustls-platform-verifier reads OS cert store).
+              # Remove the cert bundle, then try to download a Node.js version not yet cached.
+              rm -f /etc/ssl/certs/ca-certificates.crt
+              if vp env run --node 23 -- node -e 'process.exit(0)' 2>&1; then
+                echo 'Error: vp should fail without ca-certificates'
+                exit 1
+              fi
+              echo 'Confirmed: vp HTTPS fails without ca-certificates (expected)'
+              # Restore certs for remaining tests
+              apk fix --no-cache ca-certificates-bundle
+
               # Test global package install
               vp install -g typescript
               tsc --version
